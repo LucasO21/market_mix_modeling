@@ -26,7 +26,7 @@ options(future.fork.enable = TRUE)
 create_files <- TRUE
 
 # Robyn Directory ----
-robyn_directory <- "~/Desktop/School/2023_projects_"
+robyn_directory <- "~/Desktop/School/2023_projects/market_mix_modeling/cassandra_tutorials/robyn_output"
 
 # *****************************************************************************
 # **** ----
@@ -59,20 +59,123 @@ dt_prophet_holidays %>% distinct(country) %>% print(n = 100)
 # - newsletter = newsletter variable
 
 
-
 # *****************************************************************************
 # **** ----
 # MODEL SPECIFICATION ----
 # *****************************************************************************
 
+# * Step 1: Specify Input Variables ----
+## - All sign control are now automatically provided: "positive" for media & organic
+## - variables and "default" for all others. User can still customize signs if necessary.
+## - Documentation is available, access it anytime by running: ?robyn_inputs
+InputCollect <- robyn_inputs(
+    dt_input          = dt_simulated_weekly,
+    dt_holidays       = dt_prophet_holidays,
+    
+    date_var          = "date", # date format must be "2020-01-01"
+    dep_var           = "revenue", # there should be only one dependent variable
+    dep_var_type      = "revenue", # "revenue" (ROI) or "conversion" (CPA)
+    
+    prophet_vars      = c("trend", "season", "holiday"), # "trend","season", "weekday" & "holiday"
+    prophet_signs     = c("default", "default", "positive"), 
+    prophet_country   = "US", # input country code. Check: dt_prophet_holidays
+    
+    context_vars      = c("competitor_sales_b", "events"), # e.g. competitors, discount, unemployment etc
+    context_signs     = c("default", "default"), 
+    
+    paid_media_spends = c("tv_s", "ooh_s", "print_s", "facebook_s", "search_s"), # mandatory input
+    paid_media_vars   = c("tv_s", "ooh_s", "print_s", "facebook_i", "search_clicks_p"), # mandatory.
+    paid_media_signs  = c("positive", "positive", "positive", "positive", "positive"), 
+    # Paid_media_vars must have same order as paid_media_spends. 
+    # Use media exposure metrics like impressions, GRP etc. 
+    # If not applicable, use spend instead.
+    
+    organic_vars      = c("newsletter"), # marketing activity without media spend
+    organic_signs     = c("positive"), 
+    
+    factor_vars       = c("events"), # force variables in context_vars or organic_vars to be categorical
+    
+    window_start      = "2016-01-01",
+    window_end        = "2018-12-31",
+    adstock           = "geometric", # geometric, weibull_cdf or weibull_pdf.
+    
+    iterations        = 1000,
+    # - 2000 suggested for geometric
+    # - 4000 for weibull_cdf 
+    # - 6000 for weibul_pdf
+    
+    intercept_sign    = "non_negative", # options include "non_negative" or "unconstrained"
+    nevergrad_algo    = "TwoPointsDE",
+    trials            = 3,
+    
+    cores             = 4
+)
 
 
+# * Step 2: Define Hyper-Parameters ----
+plot_adstock(plot = FALSE)
+plot_saturation(plot = FALSE)
 
+hyper_names(adstock = InputCollect$adstock, all_media = InputCollect$all_media)
+
+hyper_limits() # Run hyper_limits() to check maximum upper and lower bounds by range
+
+hyperparameters <- list(
+    
+    facebook_s_alphas = c(0.5, 3),
+    facebook_s_gammas = c(0.3, 1),
+    facebook_s_thetas = c(0, 0.3),
+    
+    print_s_alphas    = c(0.5, 3),
+    print_s_gammas    = c(0.3, 1),
+    print_s_thetas    = c(0.1, 0.4),
+    
+    tv_s_alphas       = c(0.5, 3),
+    tv_s_gammas       = c(0.3, 1),
+    tv_s_thetas       = c(0.3, 0.8),
+    
+    search_s_alphas   = c(0.5, 3),
+    search_s_gammas   = c(0.3, 1),
+    search_s_thetas   = c(0, 0.3),
+    
+    ooh_s_alphas      = c(0.5, 3),
+    ooh_s_gammas      = c(0.3, 1),
+    ooh_s_thetas      = c(0.1, 0.4),
+    
+    newsletter_alphas = c(0.5, 3),
+    newsletter_gammas = c(0.3, 1),
+    newsletter_thetas = c(0.1, 0.4),
+    train_size        = c(0.5, 0.8)
+    
+)
+
+# ** Notes ----
+# - Do not give negative hyper-parameter range for positive variables
+
+# * Step 3: Add Hyper-Parameters into robyn_inputs()
+
+InputCollect <- robyn_inputs(
+    InputCollect    = InputCollect, 
+    hyperparameters = hyperparameters
+)
+
+
+# * Step 4: Build Initial Model ----
+OutputModels <- robyn_run(
+    InputCollect       = InputCollect, # feed in all model specification
+    # cores              = 4, # NULL defaults to (max available - 1)
+    # iterations         = 1000, # 2000 recommended for the dummy dataset with no calibration
+    # trials             = 3, # 5 recommended for the dummy dataset
+    # ts_validation      = TRUE, # 3-way-split time series for NRMSE validation.
+    # add_penalty_factor = FALSE, # Experimental feature. Use with caution.
+    outputs            = FALSE
+)
 
 # *****************************************************************************
 # **** ----
 # SECTION NAME ----
 # *****************************************************************************
+
 # *****************************************************************************
 # **** ----
 # SECTION NAME ----
