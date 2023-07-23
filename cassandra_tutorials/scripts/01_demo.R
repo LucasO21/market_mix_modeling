@@ -26,7 +26,11 @@ options(future.fork.enable = TRUE)
 create_files <- TRUE
 
 # Robyn Directory ----
-robyn_directory <- "~/Desktop/School/2023_projects/market_mix_modeling/cassandra_tutorials/robyn_output"
+robyn_directory <- paste0(
+    "~/Desktop/School/2023_projects/market_mix_modeling/",
+    "cassandra_tutorials/artifacts/artifacts.RDS"
+    
+)
 
 # *****************************************************************************
 # **** ----
@@ -169,6 +173,19 @@ OutputModels <- robyn_run(
     # ts_validation      = TRUE, # 3-way-split time series for NRMSE validation.
     # add_penalty_factor = FALSE, # Experimental feature. Use with caution.
     outputs            = FALSE
+)
+
+# * Step 4.1: Collect Output ----
+OutputCollect <- robyn_outputs(
+    InputCollect, OutputModels,
+    pareto_fronts = 1, # automatically pick how many pareto-fronts to fill min_candidates (100)
+    # min_candidates = 100, # top pareto models for clustering. Default to 100
+    # calibration_constraint = 0.1, # range c(0.01, 0.1) & default at 0.1
+    csv_out      = "pareto", # "pareto", "all", or NULL (for none)
+    clusters     = TRUE, # Set to TRUE to cluster similar models by ROAS. See ?robyn_clusters
+    # export      = create_files, # this will create files locally
+    plot_folder  = robyn_directory, # path for plots exports and files creation
+    plot_pareto  = create_files # Set to FALSE to deactivate plotting and saving model one-pagers
 )
 
 # *****************************************************************************
