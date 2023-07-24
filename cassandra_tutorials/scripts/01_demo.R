@@ -175,7 +175,7 @@ OutputModels <- robyn_run(
     outputs            = FALSE
 )
 
-# * Step 4.1: Collect Output ----
+# * Step 5: Collect Output ----
 OutputCollect <- robyn_outputs(
     InputCollect, OutputModels,
     pareto_fronts = 1, # automatically pick how many pareto-fronts to fill min_candidates (100)
@@ -188,10 +188,74 @@ OutputCollect <- robyn_outputs(
     plot_pareto  = create_files # Set to FALSE to deactivate plotting and saving model one-pagers
 )
 
+# * Show All Models
+OutputCollect$allSolutions
+
+# * Step 6: Save Best Model ----
+select_model_id <- "5_652_3"
+model_object    <- "../artifacts/model_5_652_3.RDS"
+
+robyn_save(
+    robyn_object  = model_object,
+    select_model  = select_model_id,
+    InputCollect  = InputCollect,
+    OutputCollect = OutputCollect
+)
+
+# * Model Information
+# OutputCollect$xDecompAgg[(
+#     solID == select_model_id & !is.na(mean_spend),
+#     .(rn, coef, mean_spend, mean_response, roi_mean, total_spend,
+#       total_response = xDecompAgg, roi_total, solID)
+# )]
+
+
 # *****************************************************************************
 # **** ----
-# SECTION NAME ----
+# BUDGET ALLOCATION ----
 # *****************************************************************************
+
+# * Scenario 1 ----
+# - Scenario "max_response": "What's the max. return given certain spend?"
+# - Example 1: max_response default setting: maximize response for latest month
+# AllocatorCollect1 <- robyn_allocator(
+#     InputCollect       = InputCollect,
+#     OutputCollect      = OutputCollect,
+#     select_model       = select_model,
+#     channel_constr_low = c(0.7, 0.7, 0.7, 0.7),
+#     channel_constr_up  = c(1.2, 1.5, 1.5, 1.5, 1.5),
+#     scenario           = "max_response",
+#     export             = create_files
+#     # date_range = NULL, # Default last month as initial period
+#     # total_budget = NULL, # When NULL, default is total spend in date_range
+#     # channel_constr_multiplier = 3,
+#    
+# )
+
+# * Scenario 2 ----
+# - Maximize response for latest 10 periods with given spend
+# AllocatorCollect2 <- robyn_allocator(
+#     InputCollect              = InputCollect,
+#     OutputCollect             = OutputCollect,
+#     select_model              = select_model,
+#     date_range                = "last_10", # Last 10 periods, same as c("2018-10-22", "2018-12-31")
+#     total_budget              = 5000000, # Total budget for date_range period simulation
+#     channel_constr_low        = c(0.8, 0.7, 0.7, 0.7, 0.7),
+#     channel_constr_up         = c(1.2, 1.5, 1.5, 1.5, 1.5),
+#     channel_constr_multiplier = 5, # Customize bound extension for wider insights
+#     scenario                  = "max_response",
+#     export                    = create_files
+# )
+
+# * Tutorial Scenario ----
+AllocatorCollect <- robyn_allocator(
+    InputCollect       = InputCollect,
+    OutputCollect      = OutputCollect,
+    select_model       = select_model,
+    scenario           = "max_historical_response",
+    channel_constr_low = c(0.8, 0.7, 0.7, 0.7, 0.7),
+    channel_constr_up  = c(1.2, 1.5, 1.5, 1.5, 1.5),
+)
 
 # *****************************************************************************
 # **** ----
