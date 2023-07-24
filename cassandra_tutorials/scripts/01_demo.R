@@ -22,10 +22,10 @@ use_virtualenv("r_reticulate_mmm_cassandra", required = TRUE)
 Sys.setenv(R_FUTURE_FORK_ENABLE = "true")
 options(future.fork.enable = TRUE)
 
-# Create Files ----
+# * Create Files ----
 create_files <- TRUE
 
-# Robyn Directory ----
+# * Robyn Directory ----
 robyn_directory <- paste0(
     "~/Desktop/School/2023_projects/market_mix_modeling/",
     "cassandra_tutorials/artifacts/artifacts.RDS"
@@ -215,6 +215,16 @@ robyn_save(
 # BUDGET ALLOCATION ----
 # *****************************************************************************
 
+# * Tutorial Scenario ----
+AllocatorCollect <- robyn_allocator(
+    InputCollect       = InputCollect,
+    OutputCollect      = OutputCollect,
+    select_model       = select_model,
+    scenario           = "max_historical_response",
+    channel_constr_low = c(0.8, 0.7, 0.7, 0.7, 0.7),
+    channel_constr_up  = c(1.2, 1.5, 1.5, 1.5, 1.5),
+)
+
 # * Scenario 1 ----
 # - Scenario "max_response": "What's the max. return given certain spend?"
 # - Example 1: max_response default setting: maximize response for latest month
@@ -247,17 +257,41 @@ robyn_save(
 #     export                    = create_files
 # )
 
-# * Tutorial Scenario ----
-AllocatorCollect <- robyn_allocator(
-    InputCollect       = InputCollect,
-    OutputCollect      = OutputCollect,
-    select_model       = select_model,
-    scenario           = "max_historical_response",
-    channel_constr_low = c(0.8, 0.7, 0.7, 0.7, 0.7),
-    channel_constr_up  = c(1.2, 1.5, 1.5, 1.5, 1.5),
+
+
+# *****************************************************************************
+# **** ----
+# MODEL REFRESH
+# *****************************************************************************
+
+# * JSON FILE ----
+json_file <- "../artifacts/Robyn_202307231613_init/RobynModel-5_652_3.json"
+
+RobynRefresh <- robyn_refresh(
+    json_file      = json_file,
+    dt_input       = dt_simulated_weekly,
+    dt_holidays    = dt_prophet_holidays,
+    refresh_steps  = 13,
+    refresh_iters  = 1000, # 1k is an estimation
+    refresh_trials = 1
 )
 
 # *****************************************************************************
 # **** ----
-# SECTION NAME ----
+# 
+# *****************************************************************************
+
+# *****************************************************************************
+# **** ----
+# 
+# *****************************************************************************
+
+# *****************************************************************************
+# **** ----
+# 
+# *****************************************************************************
+
+# *****************************************************************************
+# **** ----
+# 
 # *****************************************************************************

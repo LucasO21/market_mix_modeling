@@ -3,5 +3,6 @@
 .RData
 .Ruserdata
 /data
+/artifacts
 model_*
-#/artifacts
+*.csv
