@@ -1,0 +1,96 @@
+{
+  "InputCollect": {
+    "date_var": ["date"],
+    "dayInterval": [7],
+    "intervalType": ["week"],
+    "dep_var": ["revenue"],
+    "dep_var_type": ["revenue"],
+    "prophet_vars": ["trend", "season", "holiday"],
+    "prophet_signs": ["default", "default", "positive"],
+    "prophet_country": ["US"],
+    "context_vars": ["competitor_sales_b", "events"],
+    "context_signs": ["default", "default"],
+    "paid_media_vars": ["tv_s", "ooh_s", "print_s", "facebook_i", "search_clicks_p"],
+    "paid_media_signs": ["positive", "positive", "positive", "positive", "positive"],
+    "paid_media_spends": ["tv_s", "ooh_s", "print_s", "facebook_s", "search_s"],
+    "mediaVarCount": [5],
+    "exposure_vars": ["facebook_i", "search_clicks_p"],
+    "organic_vars": ["newsletter"],
+    "organic_signs": ["positive"],
+    "all_media": ["tv_s", "ooh_s", "print_s", "facebook_s", "search_s", "newsletter"],
+    "all_ind_vars": ["trend", "season", "holiday", "competitor_sales_b", "events", "tv_s", "ooh_s", "print_s", "facebook_s", "search_s", "newsletter"],
+    "factor_vars": ["events"],
+    "unused_vars": [],
+    "window_start": ["2016-01-04"],
+    "rollingWindowStartWhich": [7],
+    "window_end": ["2018-12-31"],
+    "rollingWindowEndWhich": [163],
+    "rollingWindowLength": [157],
+    "refreshAddedStart": ["2016-01-04"],
+    "adstock": ["geometric"],
+    "hyperparameters": {
+      "facebook_s_alphas": [0.5, 3],
+      "facebook_s_gammas": [0.3, 1],
+      "facebook_s_thetas": [0, 0.3],
+      "print_s_alphas": [0.5, 3],
+      "print_s_gammas": [0.3, 1],
+      "print_s_thetas": [0.1, 0.4],
+      "tv_s_alphas": [0.5, 3],
+      "tv_s_gammas": [0.3, 1],
+      "tv_s_thetas": [0.3, 0.8],
+      "search_s_alphas": [0.5, 3],
+      "search_s_gammas": [0.3, 1],
+      "search_s_thetas": [0, 0.3],
+      "ooh_s_alphas": [0.5, 3],
+      "ooh_s_gammas": [0.3, 1],
+      "ooh_s_thetas": [0.1, 0.4],
+      "newsletter_alphas": [0.5, 3],
+      "newsletter_gammas": [0.3, 1],
+      "newsletter_thetas": [0.1, 0.4],
+      "train_size": [0.5, 0.8]
+    },
+    "calibration_input": [
+      {
+        "channel": "facebook_s",
+        "liftStartDate": "2018-05-01",
+        "liftEndDate": "2018-06-10",
+        "liftAbs": 400000,
+        "spend": 421000,
+        "confidence": 0.85,
+        "metric": "revenue",
+        "calibration_scope": "immediate"
+      },
+      {
+        "channel": "tv_s",
+        "liftStartDate": "2018-04-03",
+        "liftEndDate": "2018-06-03",
+        "liftAbs": 300000,
+        "spend": 7100,
+        "confidence": 0.8,
+        "metric": "revenue",
+        "calibration_scope": "immediate"
+      },
+      {
+        "channel": "facebook_s",
+        "liftStartDate": "2018-07-01",
+        "liftEndDate": "2018-07-20",
+        "liftAbs": 700000,
+        "spend": 350000,
+        "confidence": 0.99,
+        "metric": "revenue",
+        "calibration_scope": "immediate"
+      }
+    ],
+    "custom_params": {
+      "iterations": [1000],
+      "intercept_sign": ["non_negative"],
+      "nevergrad_algo": ["TwoPointsDE"],
+      "trials": [3],
+      "cores": [4]
+    },
+    "version": ["Robyn (stable) v3.10.3 [R-4.0.2]"]
+  },
+  "OutputCollect": {
+    "conv_msg": ["DECOMP.RSSD NOT converged", "MAPE converged", "NRMSE converged"]
+  }
+}

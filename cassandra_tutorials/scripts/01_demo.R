@@ -278,8 +278,66 @@ RobynRefresh <- robyn_refresh(
 
 # *****************************************************************************
 # **** ----
-# 
+# CALIBRATING ----
 # *****************************************************************************
+
+# * Specify Calibration ----
+# https://github.com/facebookexperimental/Robyn/blob/9ec40e3a50b48cf2d6904544f0f24ef470515d2f/demo/demo.R#L208
+
+calibration_input <- data.frame(
+    
+  # channel name must in paid_media_vars
+  channel = c("facebook_s",  "tv_s", "facebook_s"),
+  
+  # liftStartDate must be within input data range
+  liftStartDate = as.Date(c("2018-05-01", "2018-04-03", "2018-07-01")),
+  
+  # liftEndDate must be within input data range
+  liftEndDate = as.Date(c("2018-06-10", "2018-06-03", "2018-07-20")),
+  
+  # Provided value must be tested on same campaign level in model and same metric as dep_var_type
+  liftAbs = c(400000, 300000, 700000),
+  
+  # Spend within experiment: should match within a 10% error your spend on date range for each channel from dt_input
+  spend = c(421000, 7100, 350000),
+  
+  # Confidence: if frequentist experiment, you may use 1 - pvalue
+  confidence = c(0.85, 0.8, 0.99),
+  
+  # KPI measured: must match your dep_var
+  metric = c("revenue", "revenue", "revenue"),
+  
+  # Either "immediate" or "total". For experimental inputs like Facebook Lift, "immediate" is recommended.
+  calibration_scope = c("immediate", "immediate", "immediate")
+)
+
+# * Update InputCollect ----
+InputCollect <- robyn_inputs(
+    InputCollect      = InputCollect, 
+    calibration_input = calibration_input
+)
+    
+
+# * Re-run Model With New InputCollect ----
+OutputModels <- robyn_run(
+    InputCollect       = InputCollect, # feed in all model specification
+    cores              = 4, # NULL defaults to (max available - 1)
+    iterations         = 2000, # 2000 recommended for the dummy dataset with no calibration
+    trials             = 5, # 5 recommended for the dummy dataset
+    # ts_validation      = TRUE, # 3-way-split time series for NRMSE validation.
+    # add_penalty_factor = FALSE, # Experimental feature. Use with caution.
+    outputs            = FALSE
+)
+
+# * Output Models ----
+OutputCollect <- robyn_outputs(
+    InputCollect, OutputModels,
+    pareto_fronts = 1, # automatically pick how many pareto-fronts to fill min_candidates (100)
+    csv_out       = "pareto", # "pareto", "all", or NULL (for none)
+    clusters      = TRUE, # Set to TRUE to cluster similar models by ROAS. See ?robyn_clusters
+    plot_folder   = robyn_directory, # path for plots exports and files creation
+    plot_pareto   = create_files # Set to FALSE to deactivate plotting and saving model one-pagers
+)
 
 # *****************************************************************************
 # **** ----
