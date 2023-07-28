@@ -193,11 +193,33 @@ if (length(InputCollect$exposure_vars) > 0) {
 ## Run all trials and iterations. Use ?robyn_run to check parameter definition
 OutputModels <- robyn_run(
     InputCollect       = InputCollect, # feed in all model specification
-    cores              = NULL, # NULL defaults to (max available - 1)
+    cores              = 4, # NULL defaults to (max available - 1)
     iterations         = 2000, # 2000 recommended for the dummy dataset with no calibration
     trials             = 5, # 5 recommended for the dummy dataset
     ts_validation      = TRUE, # 3-way-split time series for NRMSE validation.
     add_penalty_factor = FALSE # Experimental feature. Use with caution.
+)
+
+## Check MOO (multi-objective optimization) convergence plots
+# Read more about convergence rules: ?robyn_converge
+OutputModels$convergence$moo_distrb_plot
+OutputModels$convergence$
+    
+## Check time-series validation plot (when ts_validation == TRUE)
+# Read more and replicate results: ?ts_validation
+if (OutputModels$ts_validation) OutputModels$ts_validation_plot
+
+## Calculate Pareto fronts, cluster and export results and plots. See ?robyn_outputs
+OutputCollect <- robyn_outputs(
+    InputCollect, OutputModels,
+    pareto_fronts = "auto", # automatically pick how many pareto-fronts to fill min_candidates (100)
+    # min_candidates = 100, # top pareto models for clustering. Default to 100
+    # calibration_constraint = 0.1, # range c(0.01, 0.1) & default at 0.1
+    csv_out       = "pareto", # "pareto", "all", or NULL (for none)
+    clusters      = TRUE, # Set to TRUE to cluster similar models by ROAS. See ?robyn_clusters
+    export        = create_files, # this will create files locally
+    plot_folder   = robyn_directory, # path for plots exports and files creation
+    plot_pareto   = create_files # Set to FALSE to deactivate plotting and saving model one-pagers
 )
 
 # *****************************************************************************
