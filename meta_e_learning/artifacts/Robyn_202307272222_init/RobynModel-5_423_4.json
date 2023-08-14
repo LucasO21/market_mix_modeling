@@ -1,0 +1,240 @@
+{
+  "InputCollect": {
+    "date_var": ["DATE"],
+    "dayInterval": [7],
+    "intervalType": ["week"],
+    "dep_var": ["revenue"],
+    "dep_var_type": ["revenue"],
+    "prophet_vars": ["trend", "season", "holiday"],
+    "prophet_signs": ["default", "default", "default"],
+    "prophet_country": ["US"],
+    "context_vars": ["competitor_sales_B", "events"],
+    "context_signs": ["default", "default"],
+    "paid_media_vars": ["tv_S", "ooh_S", "print_S", "facebook_I", "search_clicks_P"],
+    "paid_media_signs": ["positive", "positive", "positive", "positive", "positive"],
+    "paid_media_spends": ["tv_S", "ooh_S", "print_S", "facebook_S", "search_S"],
+    "mediaVarCount": [5],
+    "exposure_vars": ["facebook_I", "search_clicks_P"],
+    "organic_vars": ["newsletter"],
+    "organic_signs": ["positive"],
+    "all_media": ["tv_S", "ooh_S", "print_S", "facebook_S", "search_S", "newsletter"],
+    "all_ind_vars": ["trend", "season", "holiday", "competitor_sales_B", "events", "tv_S", "ooh_S", "print_S", "facebook_S", "search_S", "newsletter"],
+    "factor_vars": ["events"],
+    "unused_vars": [],
+    "window_start": ["2016-01-04"],
+    "rollingWindowStartWhich": [7],
+    "window_end": ["2018-12-31"],
+    "rollingWindowEndWhich": [163],
+    "rollingWindowLength": [157],
+    "refreshAddedStart": ["2016-01-04"],
+    "adstock": ["geometric"],
+    "hyperparameters": {
+      "facebook_S_alphas": [0.5, 3],
+      "facebook_S_gammas": [0.3, 1],
+      "facebook_S_thetas": [0, 0.3],
+      "print_S_alphas": [0.5, 3],
+      "print_S_gammas": [0.3, 1],
+      "print_S_thetas": [0.1, 0.4],
+      "tv_S_alphas": [0.5, 3],
+      "tv_S_gammas": [0.3, 1],
+      "tv_S_thetas": [0.3, 0.8],
+      "search_S_alphas": [0.5, 3],
+      "search_S_gammas": [0.3, 1],
+      "search_S_thetas": [0, 0.3],
+      "ooh_S_alphas": [0.5, 3],
+      "ooh_S_gammas": [0.3, 1],
+      "ooh_S_thetas": [0.1, 0.4],
+      "newsletter_alphas": [0.5, 3],
+      "newsletter_gammas": [0.3, 1],
+      "newsletter_thetas": [0.1, 0.4],
+      "train_size": [0.5, 0.8]
+    },
+    "calibration_input": {},
+    "custom_params": {
+      "intercept_sign": ["non_negative"],
+      "nevergrad_algo": ["TwoPointsDE"],
+      "trials": [5],
+      "cores": [4]
+    },
+    "version": ["Robyn (stable) v3.10.3 [R-4.0.2]"]
+  },
+  "OutputCollect": {
+    "conv_msg": ["DECOMP.RSSD NOT converged", "NRMSE converged"]
+  },
+  "ExportedModel": {
+    "select_model": ["5_423_4"],
+    "ts_validation": [true],
+    "summary": [
+      {
+        "variable": "(Intercept)",
+        "coef": 274493.7687,
+        "decompPer": 0.151,
+        "decompAgg": 43095521.6839
+      },
+      {
+        "variable": "trend",
+        "coef": 0.0614,
+        "decompPer": 0.0608,
+        "decompAgg": 17370846.5932
+      },
+      {
+        "variable": "season",
+        "coef": 0.1727,
+        "decompPer": 0.0002,
+        "decompAgg": 59208.0715
+      },
+      {
+        "variable": "holiday",
+        "coef": 0.8135,
+        "decompPer": 0.008,
+        "decompAgg": 2272573.9927
+      },
+      {
+        "variable": "competitor_sales_B",
+        "coef": 0.2297,
+        "decompPer": 0.7009,
+        "decompAgg": 200092348.3002
+      },
+      {
+        "variable": "events",
+        "coef": 0,
+        "decompPer": 0,
+        "decompAgg": 0
+      },
+      {
+        "variable": "tv_S",
+        "coef": 433949.0264,
+        "decompPer": 0.0162,
+        "decompAgg": 4618321.8124,
+        "performance": 0.5941,
+        "mean_response": 3962.4531,
+        "mean_spend": 49517.4296,
+        "boot_mean": 0.8133,
+        "ci_low": 0.3315,
+        "ci_up": 1.2978
+      },
+      {
+        "variable": "ooh_S",
+        "coef": 254530.2902,
+        "decompPer": 0.048,
+        "decompAgg": 13701296.5429,
+        "performance": 0.5543,
+        "mean_response": 90483.1503,
+        "mean_spend": 157446.3796,
+        "boot_mean": 0.5421,
+        "ci_low": 0.4301,
+        "ci_up": 0.6552
+      },
+      {
+        "variable": "print_S",
+        "coef": 75756.2665,
+        "decompPer": 0.0058,
+        "decompAgg": 1666037.1733,
+        "performance": 0.9231,
+        "mean_response": 9915.3805,
+        "mean_spend": 11496.2098,
+        "boot_mean": 1.2778,
+        "ci_low": 0.6845,
+        "ci_up": 1.8699
+      },
+      {
+        "variable": "facebook_S",
+        "coef": 214928.6408,
+        "decompPer": 0.0058,
+        "decompAgg": 1653464.611,
+        "performance": 1.6498,
+        "mean_response": 1356.5235,
+        "mean_spend": 6383.6565,
+        "boot_mean": 2.054,
+        "ci_low": 0.7013,
+        "ci_up": 3.4097
+      },
+      {
+        "variable": "search_S",
+        "coef": 0,
+        "decompPer": 0,
+        "decompAgg": 0,
+        "performance": 0,
+        "mean_response": 0,
+        "mean_spend": 15476.9427,
+        "boot_mean": 0.4261,
+        "ci_low": 0,
+        "ci_up": 1.1988
+      },
+      {
+        "variable": "newsletter",
+        "coef": 56609.6602,
+        "decompPer": 0.0033,
+        "decompAgg": 941132.4781
+      }
+    ],
+    "errors": [
+      {
+        "rsq_train": 0.8975,
+        "rsq_val": 0.5868,
+        "rsq_test": 0.964,
+        "nrmse_train": 0.0735,
+        "nrmse_val": 0.7826,
+        "nrmse_test": 0.2746,
+        "nrmse": 0.7826,
+        "decomp.rssd": 0.1075,
+        "mape": 0
+      }
+    ],
+    "hyper_values": {
+      "facebook_S_alphas": [2.8936],
+      "facebook_S_gammas": [0.8744],
+      "facebook_S_thetas": [0.1946],
+      "lambda": [10088.311],
+      "newsletter_alphas": [1.9116],
+      "newsletter_gammas": [0.914],
+      "newsletter_thetas": [0.1865],
+      "ooh_S_alphas": [0.5066],
+      "ooh_S_gammas": [0.3475],
+      "ooh_S_thetas": [0.3656],
+      "print_S_alphas": [1.4076],
+      "print_S_gammas": [0.7962],
+      "print_S_thetas": [0.39],
+      "search_S_alphas": [1.1931],
+      "search_S_gammas": [0.3959],
+      "search_S_thetas": [0.2018],
+      "train_size": [0.6438],
+      "tv_S_alphas": [2.6345],
+      "tv_S_gammas": [0.8637],
+      "tv_S_thetas": [0.5994]
+    },
+    "hyper_updated": {
+      "facebook_S_alphas": [0.5, 3],
+      "facebook_S_gammas": [0.3, 1],
+      "facebook_S_thetas": [0, 0.3],
+      "newsletter_alphas": [0.5, 3],
+      "newsletter_gammas": [0.3, 1],
+      "newsletter_thetas": [0.1, 0.4],
+      "ooh_S_alphas": [0.5, 3],
+      "ooh_S_gammas": [0.3, 1],
+      "ooh_S_thetas": [0.1, 0.4],
+      "print_S_alphas": [0.5, 3],
+      "print_S_gammas": [0.3, 1],
+      "print_S_thetas": [0.1, 0.4],
+      "search_S_alphas": [0.5, 3],
+      "search_S_gammas": [0.3, 1],
+      "search_S_thetas": [0, 0.3],
+      "tv_S_alphas": [0.5, 3],
+      "tv_S_gammas": [0.3, 1],
+      "tv_S_thetas": [0.3, 0.8],
+      "lambda": [0, 1],
+      "train_size": [0.5, 0.8]
+    },
+    "calibration_constraint": [0.1],
+    "cores": [4],
+    "iterations": [2000],
+    "trials": [5],
+    "intercept_sign": ["non_negative"],
+    "nevergrad_algo": ["TwoPointsDE"],
+    "add_penalty_factor": [false],
+    "seed": [123],
+    "pareto_fronts": [4],
+    "hyper_fixed": [false],
+    "plot_folder": ["/Users/BachataLu/Desktop/School/2023_projects/market_mix_modeling/meta_e_learning/artifacts/Robyn_202307272222_init/"]
+  }
+}

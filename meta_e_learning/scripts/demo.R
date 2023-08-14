@@ -222,10 +222,85 @@ OutputCollect <- robyn_outputs(
     plot_pareto   = create_files # Set to FALSE to deactivate plotting and saving model one-pagers
 )
 
+
+# * Step 4: Select and save the any model ----
+
+## Compare all model one-pagers and select one that mostly reflects your business reality
+print(OutputCollect)
+select_model <- "5_423_4" # Pick one of the models from OutputCollect to proceed
+
+#### Version >=3.7.1: JSON export and import (faster and lighter than RDS files)
+ExportedModel <- robyn_write(InputCollect, OutputCollect, select_model, export = create_files)
+print(ExportedModel)
+
+# To plot any model's one-pager:
+myOnePager <- robyn_onepagers(InputCollect, OutputCollect, select_model, export = FALSE)
+
 # *****************************************************************************
 # **** ----
-#  ----
+# BUDGET ALLOCATION ----
 # *****************************************************************************
+
+# * Step 5: Get budget allocation based on the selected model above ----
+
+# - Order of constaints
+InputCollect$paid_media_spends
+
+# * Scenario "max_response": ----
+
+# - "What's the max. return given certain spend?"
+
+# ** Example 1: max_response default setting: maximize response for latest month
+AllocatorCollect1 <- robyn_allocator(
+    InputCollect       = InputCollect,
+    OutputCollect      = OutputCollect,
+    select_model       = select_model,
+    channel_constr_low = 0.7,
+    channel_constr_up  = c(1.2, 1.5, 1.5, 1.5, 1.5),
+    scenario           = "max_response",
+    export             = create_files
+    # date_range   = NULL, # Default last month as initial period
+    # total_budget = NULL, # When NULL, default is total spend in date_range
+    # channel_constr_multiplier = 3,
+)
+
+AllocatorCollect1
+plot(AllocatorCollect1)
+
+# Example 2: maximize response for latest 10 periods with given spend
+AllocatorCollect2 <- robyn_allocator(
+    InputCollect               = InputCollect,
+    OutputCollect              = OutputCollect,
+    select_model               = select_model,
+    date_range                 = "last_10", # Last 10 periods, same as c("2018-10-22", "2018-12-31")
+    total_budget               = 5000000, # Total budget for date_range period simulation
+    channel_constr_low         = c(0.8, 0.7, 0.7, 0.7, 0.7),
+    channel_constr_up          = c(1.2, 1.5, 1.5, 1.5, 1.5),
+    channel_constr_multiplier  = 5, # Customise bound extension for wider insights
+    scenario                   = "max_response",
+    export                     = create_files
+)
+
+plot(AllocatorCollect2)
+
+# * Scenario "target_efficiency": ----
+# - "How much to spend to hit ROAS or CPA of x?"
+
+# ** Example 3: Use default ROAS target for revenue or CPA target for conversion
+# Check InputCollect$dep_var_type for revenue or conversion type
+# Two default ROAS targets: 0.8x of initial ROAS as well as ROAS = 1
+# Two default CPA targets: 1.2x and 2.4x of the initial CPA
+AllocatorCollect3 <- robyn_allocator(
+    InputCollect  = InputCollect,
+    OutputCollect = OutputCollect,
+    select_model  = select_model,
+    scenario      = "target_efficiency",
+    export        = create_files
+    # date_range = NULL, # Default last month as initial period
+    # target_value = 2, # Customize target ROAS or CPA value
+)
+
+plot(AllocatorCollect3)
 
 
 # *****************************************************************************
